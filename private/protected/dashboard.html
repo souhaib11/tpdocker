@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task Manager</title>
+  <link rel="stylesheet" href="/protected/protected-styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Task Manager</h1>
+    <form id="addTaskForm">
+      <label for="task">New Task:</label>
+      <input type="text" id="task" name="task" required>
+      <button type="submit">Add Task</button>
+    </form>
+    <h2>Your Tasks</h2>
+    <table id="taskTable">
+      <thead>
+        <tr>
+          <th>Task</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+  <script>
+    async function fetchTasks() {
+      const response = await fetch('/tasks');
+      const tasks = await response.json();
+      const tbody = document.querySelector('#taskTable tbody');
+      tbody.innerHTML = tasks.map(task => `
+        <tr>
+          <td>${task.task}</td>
+          <td><button onclick="deleteTask(${task.id})">Delete</button></td>
+        </tr>
+      `).join('');
+    }
+
+    async function deleteTask(id) {
+      await fetch(`/tasks/${id}`, { method: 'DELETE' });
+      fetchTasks();
+    }
+
+    document.getElementById('addTaskForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const task = document.getElementById('task').value;
+      await fetch('/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ task }),
+      });
+      fetchTasks();
+    });
+
+    fetchTasks();
+  </script>
+</body>
+</html>

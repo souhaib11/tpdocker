@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="/protected/protected-styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Welcome to Your Dashboard</h1>
+    <a href="/protected/dashboard.html">Go to Task Manager</a>
+    <button id="logoutButton">Logout</button>
+  </div>
+  <script>
+    document.getElementById('logoutButton').addEventListener('click', async () => {
+      await fetch('/logout', { method: 'GET' });
+      window.location.href = '/public/login.html';
+    });
+  </script>
+</body>
+</html>
